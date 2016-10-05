@@ -1,3 +1,5 @@
+/** \file xgraph.h */
+
 /*
 *******************************************************************************
 **									     **
@@ -142,6 +144,13 @@ struct XGR_Screen
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);
 
+	/** Deprecated function.
+	 * @deprecated Does nothing.
+	 * @param x
+	 * @param y
+	 * @param sx
+	 * @param sy
+	 */
 	void flush(int x,int y,int sx,int sy);
 	void flip();
 
@@ -404,6 +413,10 @@ struct XGR_Mouse
 #define XGR_GetClip(left,top,right,bottom)		XGR_Obj.get_clip(left,top,right,bottom)
 #define XGR_SetClipMode(mode)				XGR_Obj.set_clip_mode(mode)
 
+/** Deprecated function/macro.
+ * @see XGR_Screen::flush()
+ * @deprecated XGR_Obj.flush does nothing.
+ **/
 #define XGR_Flush(x,y,sx,sy)				XGR_Obj.flush(x,y,sx,sy)
 #define XGR_Flip()					XGR_Obj.flip()
 #define XGR_Fill(col)					XGR_Obj.fill(col)

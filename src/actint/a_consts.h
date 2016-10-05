@@ -1,3 +1,5 @@
+/** \file a_consts.h */
+
 
 #define ACI_NUM_SERVERS 	5
 #define ACI_SERVER_NAME_LEN	36
@@ -8,9 +10,12 @@
 #define NUM_COL_SCHEMES 	2
 #define COL_SCHEME_LEN		60
 
-// Button IDs...
-#define ACI_WPN_PICKUP_BUTTON	2001
-#define ACI_ITM_PICKUP_BUTTON	2002
+/** @defgroup BUTTON_IDS Button IDs
+ * @{
+ */
+#define ACI_WPN_PICKUP_BUTTON	2001 /**< Toggle weapon pickup */
+#define ACI_ITM_PICKUP_BUTTON	2002 /**< Toggle item pickup */
+/** @} */
 
 // Prompt IDs...
 #define ACI_ITEM_PROMPT 	1001
@@ -152,15 +157,17 @@
 #define ACI_ANSWER_PANEL_ID	1
 #define ACI_TIME_PANEL_ID	2
 
-// Location info panel IDs...
+/** @defgroup LOCATION_INFO_PANEL_IDS Location info panel IDs
+ * @{ */
 #define ACI_INFO_PANEL		0
 #define ACI_QUEST_PANEL 	1
 #define ACI_ANSWER_PANEL	2
 #define ACI_PRICE_PANEL 	3
 #define ACI_SHOP_TIME_PANEL	4
+/** @} */
 
 // Location info menus...
-#define ACI_QUEST_MENU		2
+#define ACI_QUEST_MENU		2  /**< ACI_QUEST_MENU Only in iScreen */
 
 // Location counter panels..
 #define ACI_CREDITS_PANEL	1
@@ -176,15 +183,20 @@
 
 /* ------------------------ END OF LOCATION SECTION ------------------------- */
 
-// actInt info panel types...
+/** @defgroup ACTINT_INFO_PANEL_TYPES actInt info panel types
+ * @{
+ */
 #define INT_PANEL		1
 #define INV_PANEL		2
 #define INF_PANEL		3
+/** @} */
 
-// actInt info panel IDs...
+/** @defgroup ACTINT_INFO_PANEL_IDS actInt info panel IDs
+ * @{
+ */
 #define ACI_TIME_PANEL		4
 #define ACI_PARAMS_PANEL	5
-
+/** @} */
 /* -------------------------- WORLD SCHEME SECTION -------------------------- */
 
 // aciWorldInfo IDs...
@@ -238,7 +250,7 @@
 #define CREDITS_COUNTER 	1
 #define TIME_COUNTER		2
 
-#define SHOP_ITEMS_MENU_ID	1
+#define SHOP_ITEMS_MENU_ID	1 /**< SHOP_ITEMS_MENU_ID Only in iScreen */
 
 // Shop buy/sell modes...
 #define MECHOS_MODE		3
@@ -263,20 +275,20 @@
 /* -------------------------------------------------------------------------- */
 
 // fncMenu functions...
-#define FMENU_OFF		0
-#define FMENU_MAP		1
-#define FMENU_WMAP		2
-#define FMENU_TARGETS		3
-#define FMENU_CAMERAS		4
-#define FMENU_TELEPORT		5
-#define FMENU_PARAMETERS	6
+#define FMENU_OFF		0  /**< FMENU_OFF	*/
+#define FMENU_MAP		1  /**< FMENU_MAP	*/
+#define FMENU_WMAP		2  /**< FMENU_WMAP	*/
+#define FMENU_TARGETS		3  /**< FMENU_TARGETS	*/
+#define FMENU_CAMERAS		4  /**< FMENU_CAMERAS	*/
+#define FMENU_TELEPORT		5  /**< FMENU_TELEPORT	*/
+#define FMENU_PARAMETERS	6  /**< FMENU_PARAMETERS*/
 
 // fncMenu IDs...
-#define FMENU_TARGETS_MENU	10
-#define FMENU_WORLDS_MENU	11
-#define FMENU_PROTRACTOR_MENU	12
-#define FMENU_MECH_MESSIAH_MENU 13
-#define FMENU_TELEPORT_MENU	14
+#define FMENU_TARGETS_MENU	10  /**< FMENU_TARGETS_MENU */
+#define FMENU_WORLDS_MENU	11  /**< FMENU_WORLDS_MENU */
+#define FMENU_PROTRACTOR_MENU	12  /**< FMENU_PROTRACTOR_MENU */
+#define FMENU_MECH_MESSIAH_MENU 13  /**< FMENU_MECH_MESSIAH_MENU */
+#define FMENU_TELEPORT_MENU	14  /**< FMENU_TELEPORT_MENU */
 
 // fncMenu fonts...
 #define FMENU_TARGETS_FONT	1

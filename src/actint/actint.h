@@ -1,3 +1,4 @@
+/** \file actint.h */
 
 #define _ACI_PACK_SAVES_
 
@@ -375,6 +376,9 @@ const int 	AS_WEAPON_CLASS 	= 1;
 const int 	INV_ITEM_NUM_PARAMS	= 5;
 const int 	ACI_MAX_PRM_LEN 	= 10;
 
+/** Inventory item.
+ *
+ */
 struct invItem : public iListElement
 {
 	int ID;
@@ -421,6 +425,9 @@ struct invItem : public iListElement
 	char* fname;
 	char* frame;
 
+    /* Item menu (if it has so)
+     * @see fncMenu
+     */
 	iListElement* menu;
 
 	aciMechosPartInfo* partData;
@@ -576,51 +583,68 @@ struct invMatrix : public iListElement
 };
 
 // aIndData flags...
-const int 	IND_REDRAW	= 0x01;
-const int 	IND_FLUSH	= 0x02;
-const int 	IND_SHOW_VALUES = 0x04;
-const int 	IND_DISABLED	= 0x08;
+const int 	IND_REDRAW	= 0x01; /**< IND_REDRAW */
+const int 	IND_FLUSH	= 0x02; /**< IND_FLUSH */
+const int 	IND_SHOW_VALUES = 0x04; /**< IND_SHOW_VALUES */
+const int 	IND_DISABLED	= 0x08; /**< IND_DISABLED */
 
 // aIndData types...
-#define IND_CLOCK	1
-#define IND_BARREL	2
+#define IND_CLOCK	1 /**< IND_CLOC */
+#define IND_BARREL	2 /**< IND_BARREL */
 
 // aIndData::CornerNum values...
-#define IND_NONE	0
-#define IND_UP_LEFT	1
-#define IND_UP_RIGHT	2
-#define IND_DN_LEFT	3
-#define IND_DN_RIGHT	4
+#define IND_NONE	0 /**<IND_NONE */
+#define IND_UP_LEFT	1 /**<IND_UP_LEFT */
+#define IND_UP_RIGHT	2 /**<IND_UP_RIGHT */
+#define IND_DN_LEFT	3 /**<IND_DN_LEFT */
+#define IND_DN_RIGHT	4 /**<IND_DN_RIGHT */
 
 // IDs...
-#define IND_N0		0
-#define IND_N1		1
-#define IND_NRG 	2
-#define IND_LOAD	3
-#define IND_JUMP	4
-#define IND_WPN 	5
-#define IND_DVC 	6
-#define IND_SPIRAL	7
+#define IND_N0		0 /**< IND_N0		*/
+#define IND_N1		1 /**< IND_N1		*/
+#define IND_NRG 	2 /**< IND_NRG 	*/
+#define IND_LOAD	3 /**< IND_LOAD	*/
+#define IND_JUMP	4 /**< IND_JUMP	*/
+#define IND_WPN 	5 /**< IND_WPN 	*/
+#define IND_DVC 	6 /**< IND_DVC 	*/
+#define IND_SPIRAL	7 /**< IND_SPIRAL	*/
 
+/**
+ * Value indicator.
+ * (Enegry, hull, etc..)
+ *
+ */
 struct aIndData : public iListElement
 {
+    /** Indicator id.
+     * @see #IND_N0, #IND_N1, #IND_NRG, #IND_LOAD, #IND_JUMP, #IND_WPN, #IND_DVC, #IND_SPIRAL
+     */
 	int ID;
 
+	/**
+	 * @see #IND_REDRAW, #IND_FLUSH, #IND_SHOW_VALUES, #IND_DISABLED
+	 */
 	int flags;
 
-	int NumVals;
+	int NumVals; /**< How many values indicator show. (For example hull/energy) */
 
-	int PosX;
-	int PosY;
+	int PosX; /**< Absolute x position **/
+	int PosY; /**< Absolute y position **/
 
-	int dX;
-	int dY;
+	int dX; /**< Unused **/
+	int dY; /**< Unused **/
 
+    /** Indicator type
+     * @see #IND_CLOCK, #IND_BARREL
+     */
 	int type;
 
-	int SizeX;
-	int SizeY;
+	int SizeX; /**< Indicator x size */
+	int SizeY; /**< Indicator y size */
 
+    /** Screen corner
+     * @see #IND_NONE, #IND_UP_LEFT, #IND_UP_RIGHT, #IND_DN_LEFT, #IND_DN_RIGHT
+     */
 	int CornerNum;
 	char* pict_buf;
 
@@ -630,20 +654,51 @@ struct aIndData : public iListElement
 	int** value_ptr;
 	int** max_value;
 
+    /** Text to show when mouse over
+     */
 	char* promptData;
 
+	/** Unused? */
 	bmlObject* bml;
 
 	void init(void);
 	void finit(void);
 
+    /** Build indicator image.
+     * @see redraw()
+     */
 	void build_pict(void);
+	/** Not inplemented?? */
 	void change_val(int val);
 
+    /** Rendering function
+     *
+     * If dx == -1 then use #PosX/#PosY as position (in info mode),
+     * else use #CornerNum value to determine where to put sprite (in fullscreen mode).
+     *
+     * @param dx x margin from screen corner
+     * @param dy y margin from screen corner
+     * @see CornerNum
+     * @see actIntDispatcher::flush()
+     */
 	void redraw(int dx = -1,int dy = -1);
+
+    /**
+     * @deprecated Does nothing.
+     * @see #XGR_Flush()
+     * @param dx
+     * @param dy
+     */
 	void flush(int dx = -1,int dy = -1);
 
+	/**
+	 * set #IND_FLUSH flag
+	 */
 	void set_flush(void);
+
+	/**
+	 * set #IND_REDRAW flag
+	 */
 	void set_redraw(void);
 
 	void alloc_mem(void);
@@ -652,28 +707,40 @@ struct aIndData : public iListElement
 	~aIndData(void);
 };
 
-// aButton flags...
+/** @defgroup ABUTTON_FLAGS aButton flags
+ * @{ */
 const int 	B_REDRAW	= 0x01;
 const int 	B_FLUSH 	= 0x02;
 const int 	B_ACTIVE	= 0x08;
 const int 	B_PRESSED	= 0x10;
 const int 	B_UNPRESS	= 0x20;
 const int 	B_FRAMES_LOADED = 0x40;
+/** @} */
 
-// Button types...
+/** @defgroup BUTTON_TYPES Button types
+ * @{ */
 const int 	INTERF_BUTTON		= 0x00;
 const int 	INV_BUTTON		= 0x01;
 const int 	INFO_BUTTON		= 0x02;
+/** @} */
 
+
+/** Class representing button
+ *
+ */
 struct aButton : public iListElement
 {
+    /** @see BUTTON_IDS */
 	int ID;
 	int ControlID;
 
 	int PosX;
 	int PosY;
 
+    /** @see BUTTON_TYPES */
 	int type;
+
+    /** @see ABUTTON_FLAGS */
 	int flags;
 
 	int activeCount;
@@ -727,6 +794,9 @@ const int 	FM_BSUBMENU_ITEM	= 0x08;
 const int 	FM_NO_DELETE		= 0x10;
 const int 	FM_CLONE		= 0x20;
 
+/** fncMenu item element
+ * @see fncMenu
+ */
 struct fncMenuItem : public iListElement
 {
 	int PosX;
@@ -736,6 +806,9 @@ struct fncMenuItem : public iListElement
 	int SizeY;
 
 	int flags;
+    /**
+     * item id?
+     */
 	int fnc_code;
 	int submenuID;
 
@@ -767,24 +840,48 @@ const int 	FM_NUM_V_ITEMS	= 10;
 const int 	FM_PREFIX_DELTA = 10;
 const int 	FM_PREFIX_LEN	= 512;
 
+// TODO: group flags docs
 // fncMenu flags...
-const int 	FM_REDRAW		= 0x01;
-const int 	FM_FLUSH		= 0x02;
-const int 	FM_ACTIVE		= 0x08;
-const int 	FM_ITEM_MENU		= 0x10;
-const int 	FM_OFF			= 0x20;
-const int 	FM_LOCATION_MENU	= 0x40;
-const int 	FM_ISCREEN_MENU 	= 0x80;
-const int 	FM_NO_DEACTIVATE	= 0x100;
-const int 	FM_SUBMENU		= 0x200;
-const int 	FM_HIDDEN		= 0x400;
-const int 	FM_LOCK 		= 0x800;
-const int 	FM_NO_ALIGN		= 0x1000;
-const int 	FM_MAIN_MENU		= 0x2000;
-const int 	FM_RANGE_FONT		= 0x4000;
+const int 	FM_REDRAW		= 0x01; /**< FM_REDRAW */
+const int 	FM_FLUSH		= 0x02; /**< FM_FLUSH */
+const int 	FM_ACTIVE		= 0x08; /**< FM_ACTIVE */
+const int 	FM_ITEM_MENU		= 0x10; /**< FM_ITEM_MENU */
+const int 	FM_OFF			= 0x20; /**< FM_OFF	 */
+const int 	FM_LOCATION_MENU	= 0x40; /**< FM_LOCATION_MEN */
+const int 	FM_ISCREEN_MENU 	= 0x80; /**< FM_ISCREEN_MENU */
+const int 	FM_NO_DEACTIVATE	= 0x100; /**< FM_NO_DEACTIVAT */
+const int 	FM_SUBMENU		= 0x200; /**< FM_SUBMENU */
+const int 	FM_HIDDEN		= 0x400; /**< FM_HIDDEN */
+const int 	FM_LOCK 		= 0x800; /**< FM_LOCK  */
+const int 	FM_NO_ALIGN		= 0x1000; /**< FM_NO_ALIGN */
+const int 	FM_MAIN_MENU		= 0x2000; /**< FM_MAIN_MENU */
+const int 	FM_RANGE_FONT		= 0x4000; /**< FM_RANGE_FONT */
 
+/** Menu with list of items.
+ *
+ * - On game screen: Two menus on right side. (Map, compass, etc.)
+ * - On escave screen: Menu with list of items to buy.
+ *
+ * Also some items has their own menu
+ */
 struct fncMenu : public iListElement
 {
+	//TODO: group constants
+    /**
+     * Menu type
+     *
+     * ISCREEN:
+     * @see #SHOP_ITEMS_MENU_ID
+     * @see #ACI_QUEST_MENU
+     *
+     * ACTINT:
+     * @see #FMENU_TARGETS_MENU
+     * @see #FMENU_WORLDS_MENU
+     * @see #FMENU_PROTRACTOR_MENU
+     * @see #FMENU_MECH_MESSIAH_MENU
+     * @see #FMENU_TELEPORT_MENU
+     * @see In actint has additional values 1 and 2: top left, and top right menus
+     */
 	int type;
 
 	int PosX;
@@ -796,11 +893,26 @@ struct fncMenu : public iListElement
 	int VItems;
 	int itemY;
 
+    /**
+     * Current selected submenu
+     *
+     * @see fncMenuItem::fnc_code
+     * @see #FMENU_OFF
+     * @see #FMENU_MAP
+     * @see #FMENU_WMAP
+     * @see #FMENU_TARGETS
+     * @see #FMENU_CAMERAS
+     * @see #FMENU_TELEPORT
+     * @see #FMENU_PARAMETERS
+     */
 	int curFunction;
 	int fncCode;
 	int activeCount;
 	int curCount;
 
+    /**
+     * @see #FM_REDRAW, #FM_FLUSH, #FM_ACTIVE, #FM_ITEM_MENU, #FM_OFF, #FM_LOCATION_MENU, #FM_ISCREEN_MENU, #FM_NO_DEACTIVATE, #FM_SUBMENU, #FM_HIDDEN, #FM_LOCK , #FM_NO_ALIGN, #FM_MAIN_MENU, #FM_RANGE_FONT
+     */
 	int flags;
 
 	int vSpace;
@@ -820,10 +932,16 @@ struct fncMenu : public iListElement
 	aKeyObj* up_key;
 	aKeyObj* down_key;
 
+    /**
+     * Foreground
+     */
 	ibsObject* ibs;
+    /**
+     * Background
+     */
 	bmlObject* bml;
-	char* bml_name;
-	char* ibs_name;
+	char* bml_name;  /**< Background (#bml) filename */
+	char* ibs_name; /**< Foregroud (#ibs) filename */
 
 	aButton* trigger;
 	int trigger_code;
@@ -997,12 +1115,14 @@ struct CounterPanel : public iListElement
 	~CounterPanel(void);
 };
 
-// InfoPanel flags...
+/** @defgroup INFOPANEL_FLAGS InfoPanel flags
+ * @{ */
 const int 	IP_REDRAW	= 0x01;
 const int 	IP_FLUSH	= 0x02;
 const int 	IP_NO_ALIGN	= 0x04;
 const int 	IP_NO_REDRAW	= 0x08;
 const int 	IP_RANGE_FONT	= 0x10;
+/** @} */
 
 struct InfoPanelItem : public iListElement
 {
@@ -1010,15 +1130,31 @@ struct InfoPanelItem : public iListElement
 	int font;
 };
 
+/**
+ * Panel showing text information.
+ */
 struct InfoPanel : public iListElement
 {
+	/** Panel type
+	 * @see ACTINT_INFO_PANEL_IDS
+	 * @see LOCATION_INFO_PANEL_IDS
+	 * @see Also has undocumented 0 value: kinda main panel? (In actint show only in inventory)
+	 */
 	int type;
+
+	/** equals #INF_PANEL all time
+	 * @see ACTINT_INFO_PANEL_TYPES
+	 */
 	int interf_type;
 
+	/** X position on screeen */
 	int PosX;
+	/** Y position on screeen */
 	int PosY;
 
+	/** X padding */
 	int OffsX;
+	/** Y padding */
 	int OffsY;
 
 	int SizeX;
@@ -1027,15 +1163,23 @@ struct InfoPanel : public iListElement
 	int MaxStr;
 	int bCol;
 
+	/** @see INFOPANEL_FLAGS **/
 	int flags;
 	int font;
 
 	int vSpace;
 	int hSpace;
 
+	/** Foreground */
 	ibsObject* ibs;
+
+	/** Background */
 	bmlObject* bml;
+
+	/** Background file name */
 	char* bml_name;
+
+	/** Foreground file name */
 	char* ibs_name;
 
 	iBitmapElement* iScreenOwner;
@@ -1052,7 +1196,13 @@ struct InfoPanel : public iListElement
 	void init(void);
 	void finit(void);
 
+	/** Draws panel */
 	void redraw(void);
+
+	/**
+	 * @deprecated Does nothing.
+	 * @see #XGR_Flush()
+	 */
 	void flush(void);
 
 	void set_flush(void);
@@ -1230,11 +1380,14 @@ struct aciScreenText
 	~aciScreenText(void);
 };
 
-// actInt modes...
+/** @defgroup ACTINT_MODES actInt modes
+ * @{ */
 const int 	AS_INV_MODE	= 0x00;
 const int 	AS_INFO_MODE	= 0x01;
+/* @} */
 
-// flags...
+/** @defgroup ACTIINT_FLAGS actIntDispatcher flags
+ * @{ */
 const int 	AS_FULL_REDRAW		= 0x01;
 const int 	aMS_LEFT_PRESS		= 0x02;
 const int 	aMS_RIGHT_PRESS 	= 0x04;
@@ -1252,10 +1405,24 @@ const int 	AS_LOCKED		= 0x1000;
 const int 	AS_TEXT_MODE		= 0x2000;
 const int 	AS_CHAT_MODE		= 0x4000;
 const int 	AS_WORLDS_INIT		= 0x8000;
+/** @} */
 
+/**
+ * UI Manager
+ *
+ * There are two main modes in UI:
+ * - ISCREEN: when player is in escave. All members that correspond this mode have names starting with "i_".
+ *  For example: i_redraw(), #i_infoPanels.
+ * - ACTINT: when player is on surface
+ * @see ACTINT_MODES
+ * @see ACTIINT_FLAGS
+ */
 struct actIntDispatcher
 {
+    /** @see ACTIINT_FLAGS */
 	int flags;
+
+    /** @see ACTINT_MODES */
 	int curMode;
 
 	int curScrMode;
@@ -1271,7 +1438,10 @@ struct actIntDispatcher
 	iList* locationList;
 	aciLocationInfo* curLocData;
 
+    /** InfoPanel in ISCREEN mode */
 	iList* i_infoPanels;
+
+    /** InfoPanels in ACTINT mode */
 	iList* infoPanels;
 
 	iList* i_matrixList;
@@ -1372,11 +1542,13 @@ struct actIntDispatcher
 	void i_init(void);
 	void i_finit(void);
 
+    /** Rendering UI when on surface*/
 	void redraw(void);
 	void ind_redraw(void);
 	void flush(void);
 	void pal_flush();
 
+    /** Rendering UI when in escave*/
 	void i_redraw(void);
 	void i_flush(void);
 
