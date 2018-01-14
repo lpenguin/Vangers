@@ -34,7 +34,7 @@ build_script:
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libgcc_s_dw2-1.dll dist/bin
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libstdc++-6.dll dist/bin
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libwinpthread-1.dll dist/bin
-  - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libpng16-16.dll dist/bin
+  - cp /c/prefix/vangers/bin/libpng16-16.dll dist/bin
 
 deploy:
 - provider: GitHub
