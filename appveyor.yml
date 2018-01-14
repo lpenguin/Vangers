@@ -5,7 +5,7 @@ install:
   - mkdir c:\prefix
   - cd c:\dist\
   - set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;c:\msys64\bin;c:\msys64\usr\bin;c:\msys64\usr\local\bin;c:\msys64\mingw32\bin;%PATH%
-  - wget -q https://gist.github.com/lpenguin/6081341f66ef064878cf9d1556866544/raw/41bb2fd71d4d24b296e354631416030fe5adf9b2/prefix.tar.gz
+  - wget -q https://gist.github.com/lpenguin/6081341f66ef064878cf9d1556866544/raw/3a921f5cd712f35b0355eb886558cfeab93891cc/prefix.tar.gz
   - tar xzf prefix.tar.gz
   - mv vangers /c/prefix/vangers
   - pacman --noconfirm -S mingw-w64-i686-libpng
