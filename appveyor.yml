@@ -8,6 +8,7 @@ install:
   - wget -q https://gist.github.com/lpenguin/6081341f66ef064878cf9d1556866544/raw/41bb2fd71d4d24b296e354631416030fe5adf9b2/prefix.tar.gz
   - tar xzf prefix.tar.gz
   - mv vangers /c/prefix/vangers
+  - pacman -S libpng
 shallow_clone: true
 build_script:
   - cd c:\projects\vangers
@@ -34,6 +35,7 @@ build_script:
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libgcc_s_dw2-1.dll dist/bin
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libstdc++-6.dll dist/bin
   - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libwinpthread-1.dll dist/bin
+  - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libpng16-16.dll dist/bin
 
 deploy:
 - provider: GitHub
