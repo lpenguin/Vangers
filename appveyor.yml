@@ -8,7 +8,6 @@ install:
   - wget -q https://gist.github.com/lpenguin/6081341f66ef064878cf9d1556866544/raw/3a921f5cd712f35b0355eb886558cfeab93891cc/prefix.tar.gz
   - tar xzf prefix.tar.gz
   - mv vangers /c/prefix/vangers
-  - pacman --noconfirm -S mingw-w64-i686-libpng
 shallow_clone: true
 build_script:
   - cd c:\projects\vangers
