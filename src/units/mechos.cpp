@@ -8165,7 +8165,7 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT;
+	x0 = UcutRight - RES_DRAW_LEFT - mechosCameraOffsetX - 150;
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	sx = x0 - x1;
 
@@ -8657,8 +8657,9 @@ void CompasObject::Quant(void)
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT){
-		tx = UcutRight - COMPAS_RIGHT;
+	// TODO: do something with 150px constant
+	if(tx > UcutRight - COMPAS_RIGHT - mechosCameraOffsetX - 150){
+		tx = UcutRight - COMPAS_RIGHT - mechosCameraOffsetX - 150;
 		vMove.x = 0;
 	};
 
