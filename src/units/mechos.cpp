@@ -8657,8 +8657,9 @@ void CompasObject::Quant(void)
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT){
-		tx = UcutRight - COMPAS_RIGHT;
+	// TODO: do something with 150px constant
+	if(tx > UcutRight - COMPAS_RIGHT - mechosCameraOffsetX - 150){
+		tx = UcutRight - COMPAS_RIGHT - mechosCameraOffsetX - 150;
 		vMove.x = 0;
 	};
 
