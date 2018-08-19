@@ -20,23 +20,32 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 		          const std::shared_ptr<gl::Texture> &metaTexture,
 		          const std::shared_ptr<gl::Texture> &paletteTexture){
 	camera = std::make_shared<gl::Camera>();
-	shader = std::make_unique<BilinearFilteringShader>(
-			paletteTexture,
-			colorTexture,
-			camera,
-			shaderPath
-	);
-//	shader = std::make_unique<RayCastShader>(camera,
-//	                                      heightMapTexture,
-//	                                      colorTexture,
-//	                                      metaTexture,
-//	                                      paletteTexture,
-//	                                      shaderPath);
+	switch (shaderType){
+		case RayCast:
+			shader = std::make_unique<RayCastShader>(camera,
+									  heightMapTexture,
+									  colorTexture,
+									  metaTexture,
+									  paletteTexture,
+									  "shaders/heightmap");
+			break;
+		case BilinearFiltering:
+			shader = std::make_unique<BilinearFilteringShader>(
+					paletteTexture,
+					colorTexture,
+					camera,
+					"shaders/heightmap"
+			);
+			break;
+	}
+
 	this->colorTexture = colorTexture;
 	this->paletteTexture = paletteTexture;
 }
 
-void VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope) {
+void
+VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope, float focus) {
+	camera->focus = focus;
 	camera->viewport = glm::vec2(viewPortWidth, viewPortHeight);
 	camera->from_player(
 			x, y, z, turn, slope
