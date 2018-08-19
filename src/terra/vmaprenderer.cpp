@@ -27,7 +27,7 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 									  colorTexture,
 									  metaTexture,
 									  paletteTexture,
-									  "shaders/heightmap");
+									  "shaders/3dmap");
 			break;
 		case BilinearFiltering:
 			shader = std::make_unique<BilinearFilteringShader>(
