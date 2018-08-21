@@ -1798,7 +1798,7 @@ void iGameMap::reset(void)
 
 	vMap->accept(0, V_SIZE - 1);
 
-	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::BilinearFiltering, H_SIZE, V_SIZE));
+		renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::RayCast, H_SIZE, V_SIZE));
 	auto colorData = new uint8_t[H_SIZE * V_SIZE];
 	auto heightData = new uint8_t[H_SIZE * V_SIZE];
 	auto metaData = new uint8_t[H_SIZE * V_SIZE];
@@ -1983,7 +1983,7 @@ void iGameMap::draw(int self)
 
 
 		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
-		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+//		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
 		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
 		//Отрисовка 3д моделей
