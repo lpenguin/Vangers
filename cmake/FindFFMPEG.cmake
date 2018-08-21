@@ -15,6 +15,7 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
     /usr/local/include
     /local/include
     /mingw/include
+    /mingw32/include
     /opt/local/include
     /opt/include
     /sw/include
@@ -33,6 +34,7 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
     /opt/local/include
     /local/include
     /mingw/include
+    /mingw32/include
     /opt/include
     /sw/include
   PATH_SUFFIXES
@@ -50,6 +52,7 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
     /opt/local/include
     /local/include
     /mingw/include
+    /mingw32/include
     /opt/include
     /sw/include
   PATH_SUFFIXES
@@ -61,6 +64,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
   NAMES
     avutil
 	avutil-55
+  avutil-56
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -69,6 +73,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
     /sw/lib
     /local/lib
     /mingw/lib
+    /mingw32/bin
 	/local/bin
 	/mingw/bin
 	/bin
@@ -78,6 +83,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
   NAMES
     avcodec
 	avcodec-57
+  avcodec-58
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -88,6 +94,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
     /mingw/lib
 	/local/bin
 	/mingw/bin
+  /mingw32/bin
 	/bin
 )
 
@@ -95,6 +102,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
   NAMES
     avformat
 	avformat-57
+  avformat-58
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -105,6 +113,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 	/local/bin
 	/mingw/bin
     /mingw/lib
+    /mingw32/bin
 	/bin
 )
 

@@ -1992,7 +1992,7 @@ void iGameMap::draw(int self)
 
 
 		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
-		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+//		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
 		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
 		//Отрисовка 3д моделей
