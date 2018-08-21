@@ -1615,6 +1615,12 @@ void KeyCenter(int key)
 				ActD.Active->R_curr.y = 14267;
 			}
 			break;
+		case SDL_SCANCODE_RIGHTBRACKET:
+			curGMap->changeRenderer(0);
+			break;
+		case SDL_SCANCODE_LEFTBRACKET:
+			curGMap->changeRenderer(1);
+			break;
 		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
@@ -1798,7 +1804,10 @@ void iGameMap::reset(void)
 
 	vMap->accept(0, V_SIZE - 1);
 
-	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::BilinearFiltering, H_SIZE, V_SIZE));
+	rayCastRenderer = std::shared_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::RayCast, H_SIZE, V_SIZE));
+	bilinearRenderer= std::shared_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::BilinearFiltering, H_SIZE, V_SIZE));
+	renderer = bilinearRenderer;
+
 	auto colorData = new uint8_t[H_SIZE * V_SIZE];
 	auto heightData = new uint8_t[H_SIZE * V_SIZE];
 	auto metaData = new uint8_t[H_SIZE * V_SIZE];
@@ -1827,8 +1836,8 @@ void iGameMap::reset(void)
 	delete[] paletteData;
 	delete[] metaData;
 
-	renderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
-
+	rayCastRenderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
+	bilinearRenderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
 }
 
 void calc_view_factors()
@@ -2127,6 +2136,15 @@ void iGameMap::draw(int self)
 				sysfont.drawtext(xc - xside + 3,yc + yside - 60,status.address(),255,-1);
 #endif
 	}
+}
+
+void iGameMap::changeRenderer(int num) {
+	if(num == 0){
+		renderer = bilinearRenderer;
+	}else{
+		renderer = rayCastRenderer;
+	}
+
 }
 
 void preCALC(void)
