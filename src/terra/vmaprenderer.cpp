@@ -46,6 +46,7 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 
 	this->colorTexture = colorTexture;
 	this->paletteTexture = paletteTexture;
+	this->heightTexture = heightMapTexture;
 }
 
 void
@@ -120,6 +121,11 @@ void VMapRenderer::setDirty(int yStart, int yEnd) {
 
 }
 
+void VMapRenderer::deinit() {
+	colorTexture->release();
+	paletteTexture->release();
+}
+
 void RayCastShader::render_impl() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, data.heightMapTexture->textureId);
@@ -146,12 +152,13 @@ void RayCastShader::render_impl() {
 
 	scale = fmin(scale + 2.0f, maxScale);
 
-	auto textureScale = glm::vec4(width, height, scale, numLayers);
-	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
 
 	glUniformMatrix4fv(data.mvpAtrrId, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(data.invMvpAttrId, 1, GL_FALSE, &invMvp[0][0]);
 	glUniform4fv(data.cameraPosAttrId, 1, &data.camera->position[0]);
+
+	auto textureScale = glm::vec4(width, height, scale, numLayers);
+	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
 	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
 	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);
 
@@ -235,6 +242,15 @@ void BilinearFilteringShader::render_impl() {
 	auto mvp = data.camera->mvp();
 	glUniformMatrix4fv(data.mvpAtrrId, 1, GL_FALSE, &mvp[0][0]);
 
+	float numLayers = data.colorTexture->numLayers;
+	float width = data.colorTexture->width;
+	float height = data.colorTexture->height * numLayers;
+
+	auto textureScale = glm::vec4(width, height, 0.0f, numLayers);
+	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
+	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
+	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);
+
 	glBindVertexArray(data.bufferData->vertexArrayObject);
 
 	glEnableVertexAttribArray(data.positionAttrId);
@@ -288,4 +304,8 @@ BilinearFilteringShader::BilinearFilteringShader(const std::shared_ptr<gl::Textu
 
 	data.positionAttrId = glGetAttribLocation(programId, "position");
 	data.texcoordAttrId = glGetAttribLocation(programId, "texcoord");
+
+	data.textureScaleAttrId  = glGetUniformLocation(programId, "u_TextureScale");
+	data.screenSizeAttrId  = glGetUniformLocation(programId, "u_ScreenSize");
+
 }
