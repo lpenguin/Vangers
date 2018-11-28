@@ -1559,6 +1559,7 @@ void creat_poster() {
 
 	SDL_SaveBMP(surface, "./poster.bmp");
 }
+extern int _slope_max;
 
 void KeyCenter(SDL_Event *key)
 {
@@ -1649,7 +1650,14 @@ void KeyCenter(SDL_Event *key)
 				aciSetCameraMenu();
 			}
 			break;
-		}
+		case SDL_SCANCODE_B:
+			_slope_max += PI/24/2;
+			break;
+		case SDL_SCANCODE_V:
+			_slope_max -= PI/24/2;
+			break;
+
+	}
 	
 	if (iKeyPressed(iKEY_ZOOM_IN)) {
 		if(!Pause){
