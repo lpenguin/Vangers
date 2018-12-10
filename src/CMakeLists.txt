@@ -2,6 +2,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
+	"${PROJECT_SOURCE_DIR}/lib/vgl"
 )
 
 SET(vangers_SRCS
@@ -109,4 +110,5 @@ TARGET_LINK_LIBRARIES(vangers
 	xtool
 	xgraph
 	xsound
+	vgl
 )
