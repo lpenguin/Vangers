@@ -575,89 +575,7 @@ void aciBitmapMenu::redraw(int x,int y,int sx,int sy)
 }
 
 #ifdef _ACI_BML_FONTS_
-aciFont::aciFont(void)
-{
-	flags = 0;
-	SizeX = SizeY = Size = 0;
-	data = NULL;
-	LeftOffs = RightOffs = NULL;
-}
 
-aciFont::~aciFont(void)
-{
-	if(data) delete data;
-	if(LeftOffs) delete LeftOffs;
-	if(RightOffs) delete RightOffs;
-}
-
-void aciFont::load(char* fname)
-{
-	short sx,sy,sz;
-	XStream fh(fname,XS_IN);
-	fh > sx > sy > sz;
-	SizeX = sx;
-	SizeY = sy;
-	Size = sz;
-
-	data = new unsigned char[SizeX * SizeY * Size];
-	fh.read(data,SizeX * SizeY * Size);
-	fh.close();
-}
-
-void aciFont::calc_offs(void)
-{
-	int i,j,s,offs = 0;
-	int align_left,align_right,fl,fr;
-	unsigned char* p = data;
-
-	LeftOffs = new char[Size];
-	RightOffs = new char[Size];
-
-	for(s = 0; s < Size; s ++){
-		offs = SizeX * SizeY * s;
-		align_left = align_right = 3;
-		for(i = 0; i < SizeY; i ++){
-			fl = fr = 0;
-			for(j = 0; j < SizeX - 1; j ++){
-				if(flags & ACI_RANGE_FONT){
-					if(!fl && p[offs + j] && j < align_left){
-						align_left = j;
-						fl = 1;
-					}
-					if(!fr && p[offs + SizeX - j - 1] && j < align_right){
-						align_right = j;
-						fr = 1;
-					}
-				}
-				else {
-					if(!fl && p[offs + j] == 1 && j < align_left){
-						align_left = j;
-						fl = 1;
-					}
-					if(!fr && p[offs + SizeX - j - 1] == 1 && j < align_right){
-						align_right = j;
-						fr = 1;
-					}
-				}
-			}
-			offs += SizeX;
-		}
-		if(s != ' '){
-			LeftOffs[s] = align_left;
-			RightOffs[s] = align_right;
-		}
-		else {
-			if(SizeX < 8){
-				LeftOffs[s] = 1;
-				RightOffs[s] = 1;
-			}
-			else {
-				LeftOffs[s] = 3;
-				RightOffs[s] = 3;
-			}
-		}
-	}
-}
 #endif
 
 aciWorldMap::aciWorldMap(void)
@@ -1634,86 +1552,89 @@ void invItem::finit(void)
 }
 
 //TODO need fast malloc
-void CounterPanel::redraw(void)
+void CounterPanel::redraw(const InterfaceRenderer& renderer)
 {
-	int i,x,y,digits,ox,dx = aCellSize + 1,v = *value_ptr,col,bcol = aciCurColorScheme[ACI_BACK_COL],col_sz = 0;
-	char* ptr;
-	unsigned char* buf = NULL, *p = NULL;
-	iScreenObject* obj;
-
-	if(ID == CREDITS_COUNTER) v = aciGetCurCredits();
-
-#ifdef _ACI_BML_FONTS_
-	if(flags & CP_RANGE_FONT){
-		col = aciCurColorScheme[FM_SELECT_START];
-		col_sz = aciCurColorScheme[FM_SELECT_SIZE];
-	}
-	else {
-		col = (aciCurColorScheme[COUNTER_BORDER_COL] << 8) | aciCurColorScheme[COUNTER_COL];
-	}
-#else
-	col = aciCurColorScheme[COUNTER_COL];
-#endif
-
-	unsigned char* frm = aCellFrame;
-
+//	int i,x,y,digits,ox,dx = aCellSize + 1,v = *value_ptr,col,bcol = aciCurColorScheme[ACI_BACK_COL],col_sz = 0;
+//	char* ptr;
+//	unsigned char* buf = NULL, *p = NULL;
+//	iScreenObject* obj;
+//
+//	if(ID == CREDITS_COUNTER) v = aciGetCurCredits();
+//
+//#ifdef _ACI_BML_FONTS_
+//	if(flags & CP_RANGE_FONT){
+//		col = aciCurColorScheme[FM_SELECT_START];
+//		col_sz = aciCurColorScheme[FM_SELECT_SIZE];
+//	}
+//	else {
+//		col = (aciCurColorScheme[COUNTER_BORDER_COL] << 8) | aciCurColorScheme[COUNTER_COL];
+//	}
+//#else
+//	col = aciCurColorScheme[COUNTER_COL];
+//#endif
+//
+//	unsigned char* frm = aCellFrame;
+//
+	int v = *value_ptr;
 	last_value = v;
-
-	if(flags & CP_RANGE_FONT){
-		y = (dx - aScrFonts32[font] -> SizeY) >> 1;
-		ox = (dx - aScrFonts32[font] -> SizeX) >> 1;
-	}
-	else {
-		y = (dx - aScrFonts[font] -> SizeY) >> 1;
-		ox = (dx - aScrFonts[font] -> SizeX) >> 1;
-	}
-
+//
+//	if(flags & CP_RANGE_FONT){
+//		y = (dx - aScrFonts32[font] -> SizeY) >> 1;
+//		ox = (dx - aScrFonts32[font] -> SizeX) >> 1;
+//	}
+//	else {
+//		y = (dx - aScrFonts[font] -> SizeY) >> 1;
+//		ox = (dx - aScrFonts[font] -> SizeX) >> 1;
+//	}
+//
+//	if(!iScreenOwner){
+//		buf = new unsigned char[SizeX * SizeY];
+//	} else {
+//		if(!(iScreenOwner -> flags & EL_DATA_LOADED))
+//			return;
+//		obj = (iScreenObject*)iScreenOwner -> owner;
+//		obj -> flags |= OBJ_MUST_REDRAW;
+//		buf = (unsigned char*)iScreenOwner -> fdata;
+//	}
+//	p = new unsigned char[dx * dx];
+//
+//	memset(buf,0,SizeX * SizeY);
+//	memcpy(p,frm,dx * dx);
+//
+//	xconv -> init();
+//	*xconv <= *value_ptr;
+//
+//	ptr = xconv -> address();
+//	digits = strlen(ptr);
+//
+//	x = 0;
+//	swap_buf_col(1,bcol,dx,dx,p);
+//	swap_buf_col(2,bcol,dx,dx,p);
+//	for(i = 0; i < MaxLen; i ++){
+//		mem_putspr(x,0,dx,dx,SizeX,SizeY,p,buf);
+//		x += dx - 1;
+//	}
+//
+//	x = (MaxLen - digits) * dx;
+//	for(i = 0; i < digits; i ++){
+//		if(flags & CP_RANGE_FONT)
+//			aPutChar32(x + ox,y,font,col,col_sz,ptr[i],SizeX,buf);
+//		else
+//			aPutChar(x + ox,y,font,col,ptr[i],SizeX,SizeY,buf);
+//		x += dx - 1;
+//	}
 	if(!iScreenOwner){
-		buf = new unsigned char[SizeX * SizeY];
-	} else {
-		if(!(iScreenOwner -> flags & EL_DATA_LOADED))
-			return;
-		obj = (iScreenObject*)iScreenOwner -> owner;
-		obj -> flags |= OBJ_MUST_REDRAW;
-		buf = (unsigned char*)iScreenOwner -> fdata;
-	}
-	p = new unsigned char[dx * dx];
-
-	memset(buf,0,SizeX * SizeY);
-	memcpy(p,frm,dx * dx);
-
-	xconv -> init();
-	*xconv <= v;
-
-	ptr = xconv -> address();
-	digits = strlen(ptr);
-
-	x = 0;
-	swap_buf_col(1,bcol,dx,dx,p);
-	swap_buf_col(2,bcol,dx,dx,p);
-	for(i = 0; i < MaxLen; i ++){
-		mem_putspr(x,0,dx,dx,SizeX,SizeY,p,buf);
-		x += dx - 1;
-	}
-
-	x = (MaxLen - digits) * dx;
-	for(i = 0; i < digits; i ++){
-		if(flags & CP_RANGE_FONT)
-			aPutChar32(x + ox,y,font,col,col_sz,ptr[i],SizeX,buf);
-		else
-			aPutChar(x + ox,y,font,col,ptr[i],SizeX,SizeY,buf);
-		x += dx - 1;
-	}
-	if(!iScreenOwner){
-		XGR_PutSpr(PosX,PosY,SizeX,SizeY,buf,XGR_HIDDEN_FON);
-		if(ibs) ibs -> show();
+		renderer.renderFont(std::to_string(v), *font, {PosX, PosY});
+		renderer.renderTexture(textureFront, {PosX, PosY}, {SizeX, SizeY});
+//		XGR_PutSpr(PosX,PosY,SizeX,SizeY,buf,XGR_HIDDEN_FON);
+//		if(ibs) ibs -> show();
 	}
 
 	flags &= ~CP_REDRAW;
-	if(!iScreenOwner) {
-		delete[] buf;
-	}
-	delete[] p;
+//	if(!iScreenOwner) {
+//		delete[] buf;
+//	}
+//	delete[] p;
 }
 
 void invItem::redraw(int x,int y,int drop_mode,int flush_mode)
@@ -2263,7 +2184,7 @@ void invMatrixCell::remove_item(void)
 aButton::aButton(void)
 {
 	fname = NULL;
-	frameSeq = NULL;
+//	frameSeq = NULL;
 
 	ID = 0;
 	ControlID = 0;
@@ -2293,9 +2214,9 @@ aButton::~aButton(void)
 		delete[] fname;
 	}
 
-	if(frameSeq) {
-		delete[] frameSeq;
-	}
+//	if(frameSeq) {
+//		delete[] frameSeq;
+//	}
 
 	if(promptData) {
 		delete[] promptData;
@@ -2373,10 +2294,23 @@ void aButton::load_frames(void)
 
 		numFrames = s;
 
-		frameSeq = new char[sz];
+		char * frameSeq = new char[sz];
 		fh.read(frameSeq,sz);
 		fh.close();
 
+		textures = vgl::Texture2DArray::create(
+				{SizeX, SizeY, numFrames},
+				vgl::TextureInternalFormat::R8ui
+				);
+		for(int i = 0; i < numFrames; i++){
+			textures->subImage(
+					{0, 0, i},
+					{SizeX, SizeY, 1},
+					vgl::TextureFormat::RedInteger,
+					vgl::TextureDataType::UnsignedByte,
+					frameSeq + (SizeX * SizeY * i)
+					);
+		}
 		flags |= B_FRAMES_LOADED;
 	}
 }
@@ -2384,7 +2318,7 @@ void aButton::load_frames(void)
 void aButton::free_frames(void)
 {
 	if(flags & B_FRAMES_LOADED){
-		delete[] frameSeq;
+		textures->free();
 		flags ^= B_FRAMES_LOADED;
 	}
 }
@@ -2614,7 +2548,7 @@ InfoPanel::InfoPanel(void)
 
 CounterPanel::CounterPanel(void)
 {
-	ibs = NULL;
+//	ibs = NULL;
 	ibs_name = NULL;
 
 	ID = CREDITS_COUNTER;
@@ -2672,11 +2606,11 @@ InfoPanel::~InfoPanel(void)
 
 CounterPanel::~CounterPanel(void)
 {
-	if(ibs) delete ibs;
+//	if(ibs) delete ibs;
 	if(ibs_name) delete[] ibs_name;
 
 	delete xconv;
-
+	textureFront->free();
 	flags = 0;
 }
 
@@ -3062,7 +2996,7 @@ void invMatrix::get_item_coords(invItem* p,int& x,int &y,int &sx,int &sy)
 	sy = _sy;
 }
 
-void invMatrix::redraw(void)
+void invMatrix::redraw(const InterfaceRenderer& renderer)
 {
 	redraw_matrix();
 	redraw_items();
@@ -3077,10 +3011,10 @@ void CounterPanel::flush(void)
 {
 	if(iScreenOwner) return;
 
-	if(ibs)
-		XGR_Flush(ibs -> PosX,ibs -> PosY,ibs -> SizeX,ibs -> SizeY);
-	else
-		XGR_Flush(PosX,PosY,SizeX,SizeY);
+//	if(ibs)
+//		XGR_Flush(ibs -> PosX,ibs -> PosY,ibs -> SizeX,ibs -> SizeY);
+//	else
+//		XGR_Flush(PosX,PosY,SizeX,SizeY);
 
 	flags &= ~CP_FLUSH;
 }
@@ -3142,12 +3076,10 @@ void invMatrix::init(void)
 	}
 }
 
-void aButton::redraw(void)
+void aButton::redraw(const InterfaceRenderer& renderer)
 {
-	int index = cur_frame * SizeX * SizeY;
-	char* ptr = frameSeq + index;
+	renderer.renderTexture(textures, cur_frame, {PosX, PosY}, {SizeX,SizeY});
 
-	XGR_PutSpr(PosX,PosY,SizeX,SizeY,ptr,XGR_HIDDEN_FON);
 	flags &= ~B_REDRAW;
 }
 
@@ -3231,7 +3163,7 @@ void actIntDispatcher::redraw(void)
 			break;
 	}
 //	curIbs->show();
-	screens[currentScreenId]->redraw();
+	screens[currentScreenId]->redraw(*interfaceRenderer);
 
 	if (!(flags & AS_FULL_REDRAW)) {
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
@@ -3246,43 +3178,43 @@ void actIntDispatcher::redraw(void)
 		flags |= AS_FULL_FLUSH;
 		cp = (CounterPanel *) intCounters->last;
 		while (cp) {
-			cp->redraw();
+			cp->redraw(*interfaceRenderer);
 			cp = (CounterPanel *) cp->prev;
 		}
 		b = (aButton *) intButtons->last;
 		while (b) {
-			b->redraw();
+			b->redraw(*interfaceRenderer);
 			b = (aButton *) b->prev;
 		}
 		switch (curMode) {
 			case AS_INV_MODE:
 				b = (aButton *) invButtons->last;
 				while (b) {
-					b->redraw();
+					b->redraw(*interfaceRenderer);
 					b = (aButton *) b->prev;
 				}
 				if (curMatrix) {
-					curMatrix->redraw();
+					curMatrix->redraw(*interfaceRenderer);
 				}
 				if (iP) {
-					iP->redraw();
+					iP->redraw(*interfaceRenderer);
 				}
 				cp = (CounterPanel *) invCounters->last;
 				while (cp) {
-					cp->redraw();
+					cp->redraw(*interfaceRenderer);
 					cp = (CounterPanel *) cp->prev;
 				}
 				break;
 			case AS_INFO_MODE:
 				b = (aButton *) infButtons->last;
 				while (b) {
-					b->redraw();
+					b->redraw(*interfaceRenderer);
 					b = (aButton *) b->prev;
 				}
 				p = (fncMenu *) menuList->last;
 				while (p) {
 					if (!(p->flags & FM_SUBMENU) || (p->flags & FM_ACTIVE))
-						p->redraw();
+						p->redraw(*interfaceRenderer);
 					else
 						p->flags &= ~FM_REDRAW;
 
@@ -3290,7 +3222,7 @@ void actIntDispatcher::redraw(void)
 				}
 				cp = (CounterPanel *) infCounters->last;
 				while (cp) {
-					cp->redraw();
+					cp->redraw(*interfaceRenderer);
 					cp = (CounterPanel *) cp->prev;
 				}
 				break;
@@ -3299,14 +3231,14 @@ void actIntDispatcher::redraw(void)
 	}
 	b = (aButton *) intButtons->last;
 	while (b) {
-		b->redraw();
+		b->redraw(*interfaceRenderer);
 		b->set_flush();
 		b = (aButton *) b->prev;
 	}
 	if (curMode == AS_INV_MODE) {
 		b = (aButton *) invButtons->last;
 		while (b) {
-			b->redraw();
+			b->redraw(*interfaceRenderer);
 			b->set_flush();
 			b = (aButton *) b->prev;
 		}
@@ -3315,14 +3247,14 @@ void actIntDispatcher::redraw(void)
 	if (curMode == AS_INFO_MODE) {
 		b = (aButton *) infButtons->last;
 		while (b) {
-			b->redraw();
+			b->redraw(*interfaceRenderer);
 			b = (aButton *) b->prev;
 		}
 	}
 
 	if (curMode == AS_INV_MODE && curMatrix) {
 		m = curMatrix;
-		m->redraw();
+		m->redraw(*interfaceRenderer);
 		m->set_flush();
 	}
 
@@ -3337,7 +3269,7 @@ void actIntDispatcher::redraw(void)
 		if (iPl->type != ACI_PARAMS_PANEL) {
 			if (curMode == AS_INFO_MODE && iPl->interf_type == INF_PANEL ||
 				curMode == AS_INV_MODE && iPl->interf_type == INV_PANEL) {
-				iPl->redraw();
+				iPl->redraw(*interfaceRenderer);
 				iPl->set_flush();
 			}
 		}
@@ -3355,20 +3287,20 @@ void actIntDispatcher::redraw(void)
 //					 <<", FM_HIDDEN: "<<(bool)(p -> flags & FM_HIDDEN)<<std::endl;
 
 			if (!(p->flags & FM_SUBMENU) || p->flags & FM_ACTIVE) {
-				p->redraw();
+				p->redraw(*interfaceRenderer);
 				p->set_flush();
 			}
 			p = (fncMenu *) p->prev;
 		}
 	}
 	if (iP && curMode == AS_INV_MODE) {
-		iP->redraw();
+		iP->redraw(*interfaceRenderer);
 		iP->set_flush();
 	}
 	cp = (CounterPanel *) intCounters->last;
 	while (cp) {
 		if (cp->flags & CP_REDRAW) {
-			cp->redraw();
+			cp->redraw(*interfaceRenderer);
 			cp->set_flush();
 		}
 		cp = (CounterPanel *) cp->prev;
@@ -3377,7 +3309,7 @@ void actIntDispatcher::redraw(void)
 		cp = (CounterPanel *) infCounters->last;
 		while (cp) {
 			if (cp->flags & CP_REDRAW) {
-				cp->redraw();
+				cp->redraw(*interfaceRenderer);
 				cp->set_flush();
 			}
 			cp = (CounterPanel *) cp->prev;
@@ -3387,7 +3319,7 @@ void actIntDispatcher::redraw(void)
 		cp = (CounterPanel *) invCounters->last;
 		while (cp) {
 			if (cp->flags & CP_REDRAW) {
-				cp->redraw();
+				cp->redraw(*interfaceRenderer);
 				cp->set_flush();
 			}
 			cp = (CounterPanel *) cp->prev;
@@ -3414,37 +3346,37 @@ void actIntDispatcher::i_redraw(void)
 		if(flags & AS_ISCREEN_INV_MODE){
 			cp = (CounterPanel*)i_Counters -> last;
 			while(cp){
-				cp -> redraw();
+				cp -> redraw(*interfaceRenderer);
 				cp = (CounterPanel*)cp -> prev;
 			}
 			if(curMatrix){
-				curMatrix -> redraw();
+				curMatrix -> redraw(*interfaceRenderer);
 			}
 			if(secondMatrix){
-				secondMatrix -> redraw();
+				secondMatrix -> redraw(*interfaceRenderer);
 			}
 			if(iP){
-				iP -> redraw();
+				iP -> redraw(*interfaceRenderer);
 			}
 			p = (fncMenu*)i_menuList -> last;
 			while(p){
 				if(!(p -> flags & FM_LOCATION_MENU) && p -> flags & FM_ACTIVE)
-					p -> redraw();
+					p -> redraw(*interfaceRenderer);
 				p = (fncMenu*)p -> prev;
 			}
 		}
 		else {
-			if(qMenu) qMenu -> redraw();
+			if(qMenu) qMenu -> redraw(*interfaceRenderer);
 			p = (fncMenu*)i_menuList -> last;
 			while(p){
 				if(p -> flags & FM_LOCATION_MENU && p -> flags & FM_ACTIVE)
-					p -> redraw();
+					p -> redraw(*interfaceRenderer);
 				p = (fncMenu*)p -> prev;
 			}
 		}
 		ip = (InfoPanel*)i_infoPanels -> last;
 		while(ip){
-			ip -> redraw();
+			ip -> redraw(*interfaceRenderer);
 			ip = (InfoPanel*)ip -> prev;
 		}
 		flags |= AS_FULL_REDRAW;
@@ -3453,25 +3385,25 @@ void actIntDispatcher::i_redraw(void)
 
 	if(flags & AS_ISCREEN_INV_MODE){
 		if(curMatrix && curMatrix -> flags & IM_REDRAW){
-			curMatrix -> redraw();
+			curMatrix -> redraw(*interfaceRenderer);
 			curMatrix -> set_flush();
 		}
 
 		if(secondMatrix && secondMatrix -> flags & IM_REDRAW){
-			secondMatrix -> redraw();
+			secondMatrix -> redraw(*interfaceRenderer);
 			secondMatrix -> set_flush();
 		}
 
 		if(iP){
 			if(iP -> flags & IP_REDRAW){
-				iP -> redraw();
+				iP -> redraw(*interfaceRenderer);
 				iP -> set_flush();
 			}
 		}
 		cp = (CounterPanel*)i_Counters -> last;
 		while(cp){
 			if(cp -> flags & CP_REDRAW){
-				cp -> redraw();
+				cp -> redraw(*interfaceRenderer);
 				cp -> set_flush();
 			}
 			cp = (CounterPanel*)cp -> prev;
@@ -3479,18 +3411,18 @@ void actIntDispatcher::i_redraw(void)
 		p = (fncMenu*)i_menuList -> last;
 		while(p){
 			if(!(p -> flags & FM_LOCATION_MENU) && p -> flags & FM_ACTIVE){
-				p -> redraw();
+				p -> redraw(*interfaceRenderer);
 				p -> set_flush();
 			}
 			p = (fncMenu*)p -> prev;
 		}
 	}
 	else {
-		if(qMenu && qMenu -> flags & FMC_REDRAW) qMenu -> redraw();
+		if(qMenu && qMenu -> flags & FMC_REDRAW) qMenu -> redraw(*interfaceRenderer);
 		p = (fncMenu*)i_menuList -> last;
 		while(p){
 			if(p -> flags & FM_LOCATION_MENU && p -> flags & FM_ACTIVE){
-				p -> redraw();
+				p -> redraw(*interfaceRenderer);
 				p -> set_flush();
 			}
 			p = (fncMenu*)p -> prev;
@@ -3500,7 +3432,7 @@ void actIntDispatcher::i_redraw(void)
 	ip = (InfoPanel*)i_infoPanels -> last;
 	while(ip){
 		if(ip -> flags & IP_REDRAW){
-			ip -> redraw();
+			ip -> redraw(*interfaceRenderer);
 			ip -> set_flush();
 		}
 		ip = (InfoPanel*)ip -> prev;
@@ -3845,6 +3777,7 @@ aIndData* actIntDispatcher::get_ind(int id)
 }
 
 void actIntDispatcher::init(void) {
+	interfaceRenderer = std::make_shared<InterfaceRenderer>();
 	fncMenu *it;
 	invItem *itm;
 	invMatrix *p;
@@ -4218,6 +4151,9 @@ void actIntDispatcher::finit(void)
 		b = (aButton*)b -> prev;
 	}
 
+	for(const auto& screen : screens){
+		screen.second->finit();
+	}
 	free_cell_frame();
 }
 
@@ -4455,7 +4391,7 @@ void fncMenuItem::redraw_str(int bsx,int bsy,unsigned char* buf,int x,int y,unsi
 	aPutStr(x,y,font,col,str,bsx,buf,space);
 }
 
-void fncMenu::redraw(void)
+void fncMenu::redraw(const InterfaceRenderer& renderer)
 {
 	int i,b_col,sx,sy;
 	unsigned char* buf;
@@ -4553,7 +4489,7 @@ void fncMenu::redraw(void)
 	}
 }
 
-void InfoPanel::redraw(void)
+void InfoPanel::redraw(const InterfaceRenderer& renderer)
 {
 	int i,x,y,fnt,col,col1 = 0,col_sz,tmp1,tmp2;
 	unsigned char* buf;
@@ -7670,10 +7606,41 @@ int invMatrix::check_redraw(void)
 void CounterPanel::init(void)
 {
 	if(ibs_name){
-		if(!ibs) ibs = new ibsObject;
-		ibs -> load(ibs_name);
-		ibs->PosX = PosX;
-		ibs->PosY = PosY;
+		ibsObject ibs;
+		ibs.load(ibs_name);
+
+		char* image = new char[ibs.SizeX * ibs.SizeY];
+
+		int _x, _y;
+		unsigned char* pbuf = ibs.image;
+		auto cnt = *((int*)pbuf);
+		pbuf += 4;
+		while(cnt){
+			_x = *((int*)pbuf);
+			pbuf += 4;
+			_y = *((int*)pbuf);
+			pbuf += 4;
+
+			memcpy(image + _y * SizeX + _x, pbuf, cnt);
+			pbuf += cnt;
+
+			cnt = *((int*)pbuf);
+			pbuf += 4;
+		}
+		textureFront = vgl::Texture2D::create(
+				{ibs.SizeX, ibs.SizeY},
+				vgl::TextureInternalFormat::R8ui
+		);
+		textureFront->subImage(
+				{0, 0},
+				textureFront->getDimensions(),
+				vgl::TextureFormat::RedInteger,
+				vgl::TextureDataType::UnsignedByte,
+				image
+				);
+
+		delete[] image;
+
 	}
 	SizeX = MaxLen * (aCellSize + 1);
 	SizeY = aCellSize + 1;
@@ -7690,9 +7657,9 @@ void CounterPanel::init(void)
 
 void CounterPanel::finit(void)
 {
-	if(ibs_name){
-		ibs -> free();
-	}
+//	if(ibs_name){
+//		ibs -> free();
+//	}
 }
 
 void actIntDispatcher::trade_items(invMatrix* p,int imode)
@@ -7775,10 +7742,10 @@ int invMatrix::check_xy(int x,int y)
 void CounterPanel::move(int delta)
 {
 	PosX -= delta;
-	if(ibs){
-		ibs -> CenterX -= delta;
-		ibs -> PosX -= delta;
-	}
+//	if(ibs){
+//		ibs -> CenterX -= delta;
+//		ibs -> PosX -= delta;
+//	}
 }
 
 void InfoPanel::move(int delta)
@@ -8703,7 +8670,7 @@ void fncMenuSet::redraw_owner(void)
 	obj -> flush();
 }
 
-void fncMenuSet::redraw(void)
+void fncMenuSet::redraw(const InterfaceRenderer& renderer)
 {
 	int i,y,sx,dx,rdx,index,r_index;
 
@@ -8725,7 +8692,7 @@ void fncMenuSet::redraw(void)
 	memset(redraw_data -> fdata,0,redraw_data -> SizeX * redraw_data -> SizeY);
 	m = (fncMenu*)items -> first;
 	for(i = 0; i < items -> Size; i ++){
-		m -> redraw();
+		m -> redraw(renderer);
 		m = (fncMenu*)m -> next;
 	}
 	if(data -> SizeX > redraw_data -> SizeX){
@@ -9643,24 +9610,42 @@ void invItem::set_template(char* p)
 }
 
 
-void BitmapImage::redraw() {
-	XGR_Obj.putspr(PosX, PosY, SizeX, SizeY, image->pixels, 0);
+void BitmapImage::redraw(const InterfaceRenderer& renderer) {
+	renderer.renderTexture(texture, {PosX, PosY}, {SizeX, SizeY});
 }
 
 void BitmapImage::init() {
-	image = IMG_Load(imagePath.c_str());
+	auto* image = IMG_Load(imagePath.c_str());
 	if (!image) {
 		const char* err = IMG_GetError();
 		ErrH.Abort("IMG_Load: ", XERR_USER, 0, err);
 	}
+
+	texture = vgl::Texture2D::create(
+			{image->w, image->h},
+			vgl::TextureInternalFormat::R8ui,
+			vgl::TextureFilter::Nearest
+	);
+	texture->subImage(
+			{0, 0},
+			texture->getDimensions(),
+			vgl::TextureFormat::RedInteger,
+			vgl::TextureDataType::UnsignedByte,
+			image->pixels
+			);
+
 	SizeX = image->w;
 	SizeY = image->h;
+
+	SDL_FreeSurface(image);
+}
+
+void BitmapImage::finit(){
+	texture->free();
 }
 
 BitmapImage::~BitmapImage() {
-	if (image != nullptr) {
-		SDL_FreeSurface(image);
-	}
+
 }
 
 void Screen::addWidget(const std::shared_ptr<Widget> &image) {
@@ -9676,9 +9661,14 @@ void Screen::layout(int width, int height) {
 	}
 }
 
-void Screen::redraw() {
+void Screen::finit(){
 	for (auto const & widget : widgets) {
-		widget->redraw();
+		widget->finit();
+	}
+}
+void Screen::redraw(const InterfaceRenderer& renderer) {
+	for (auto const & widget : widgets) {
+		widget->redraw(renderer);
 	}
 }
 

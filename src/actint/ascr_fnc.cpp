@@ -3953,7 +3953,7 @@ void aciClearQuestMenu(void)
 
 	if(m && m -> flags & FMC_DATA_INIT){
 		m -> finit();
-		m -> redraw();
+		m -> redraw(*aScrDisp->interfaceRenderer);
 		m -> redraw_owner();
 	}
 }
@@ -5831,7 +5831,7 @@ void aciRedrawParamsPanel(int x,int y,int sx,int sy)
 
 	pl -> flags |= IP_NO_REDRAW;
 
-	pl -> redraw();
+	pl -> redraw(InterfaceRenderer());
 }
 
 void aciPutTreasureItem(void)

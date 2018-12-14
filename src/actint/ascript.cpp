@@ -1908,7 +1908,7 @@ void aParseScript(const char* fname,char* bname)
 							wData->font = script->read_idata();
 							break;
 						case AS_INIT_COUNTER:
-							cP->font = script->read_idata();
+							cP->fontIndex = script->read_idata();
 							break;
 						case AS_INIT_IBS:
 							ibsObj->fontID = script->read_idata();

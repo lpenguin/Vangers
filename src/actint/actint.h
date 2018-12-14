@@ -2,6 +2,9 @@
 #include <memory>
 #include <map>
 #include "SDL_image.h"
+#include "vgl/texture_ext.h"
+#include "InterfaceRenderer.h"
+
 #define _ACI_PACK_SAVES_
 
 /* ----------------------------- Debug options ------------------------------ */
@@ -51,26 +54,9 @@ struct actEvent;
 
 #ifdef _ACI_BML_FONTS_
 // aciFont flags...
-#define ACI_RANGE_FONT		0x01
+#include "aciFont.h"
 
-struct aciFont
-{
-	int flags;
 
-	int SizeX;
-	int SizeY;
-	int Size;
-
-	unsigned char* data;
-	char* LeftOffs;
-	char* RightOffs;
-
-	void load(char* fname);
-	void calc_offs(void);
-
-	aciFont(void);
-	~aciFont(void);
-};
 #endif
 
 #define BM_GLOBAL_SIZE		1000
@@ -465,8 +451,9 @@ public:
 	int SizeY = 0;
 
 	virtual void init() {};
+	virtual void finit() {};
 	virtual void layout(int width, int height);
-	virtual void redraw() = 0;
+	virtual void redraw(const InterfaceRenderer& renderer) = 0;
 	virtual ~Widget(){};
 private:
 	bool _layoutDone = false;
@@ -475,14 +462,15 @@ private:
 
 class BitmapImage: public Widget {
 public:
-	void redraw();
+	void redraw(const InterfaceRenderer& renderer) override;
 	inline void setImagePath(std::string imagePath){
 		this->imagePath = imagePath;
 	}
-	void init();
+	void init() override;
+	void finit() override;
 	~BitmapImage();
 private:
-	SDL_Surface *image = nullptr;
+	std::shared_ptr<vgl::Texture2D> texture;
 	std::string imagePath = "";
 };
 
@@ -507,8 +495,9 @@ public:
 	int getId() const;
 
 	void addWidget(const std::shared_ptr<Widget>& widget);
-	void redraw();
+	void redraw(const InterfaceRenderer& renderer);
 	void layout(int width, int height);
+	void finit();
 
 };
 
@@ -606,7 +595,7 @@ struct invMatrix : public iListElement, public Widget
 	void init(void);
 	void init_avi_id(char* p,int num);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer);
 	void redraw_matrix(void);
 	void redraw_items(void);
 	void flush(void);
@@ -742,8 +731,8 @@ struct aButton : public iListElement, public Widget
 	char* fname;
 
 	int cur_frame;
-	char* frameSeq;
-
+//	char* frameSeq;
+	std::shared_ptr<vgl::Texture2DArray> textures;
 	char* promptData;
 
 	aKeyObj* scankey;
@@ -754,7 +743,7 @@ struct aButton : public iListElement, public Widget
 
 	void press(void);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer) override;
 	void flush(void);
 
 	void init(void);
@@ -912,7 +901,7 @@ struct fncMenu : public iListElement, public Widget {
 	int check_xy(int x,int y);
 	int change(int x,int y,int mode = 0);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer);
 	void flush(void);
 
 	void set_flush(void);
@@ -947,13 +936,10 @@ struct fncMenu : public iListElement, public Widget {
 const int 	FMC_REDRAW	= 0x01;
 const int 	FMC_DATA_INIT	= 0x02;
 
-struct fncMenuSet
+struct fncMenuSet: public Widget
 {
-	int PosX;
-	int flags;
 
-	int SizeX;
-	int SizeY;
+	int flags;
 
 	int ScreenX;
 	int ScreenY;
@@ -978,7 +964,7 @@ struct fncMenuSet
 
 	void add(fncMenu* p,int mode = 0);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer);
 	void redraw_owner(void);
 	void set_redraw(void);
 
@@ -1004,20 +990,25 @@ const int 	CP_RANGE_FONT	= 0x04;
 
 struct CounterPanel : public iListElement, public Widget
 {
+private:
+	std::shared_ptr<vgl::Texture2D> textureFront;
+public:
 	int ID;
 	int type;
 
 	int MaxLen;
 
 	int flags;
-	int font;
+//	int font;
+	int fontIndex;
+	std::shared_ptr<Font> font;
 	int color;
 
 	int hSpace;
 	int* value_ptr;
 	int last_value;
 
-	ibsObject* ibs;
+//	ibsObject* ibs;
 	char* ibs_name;
 
 	XBuffer* xconv;
@@ -1029,7 +1020,7 @@ struct CounterPanel : public iListElement, public Widget
 	void init(void);
 	void finit(void);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer);
 	void flush(void);
 
 	void set_flush(void);
@@ -1088,7 +1079,7 @@ struct InfoPanel : public iListElement, public Widget
 	void init(void);
 	void finit(void);
 
-	void redraw(void);
+	void redraw(const InterfaceRenderer& renderer);
 	void flush(void);
 
 	void set_flush(void);
@@ -1300,6 +1291,7 @@ const int SCREEN_INVENTORY_ID = 2;
 struct actIntDispatcher
 {
 	std::map<int, std::shared_ptr<Screen>> screens;
+	std::shared_ptr<InterfaceRenderer> interfaceRenderer;
 	int currentScreenId;
 
 	int flags;

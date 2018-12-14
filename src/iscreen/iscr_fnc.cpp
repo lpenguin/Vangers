@@ -1466,7 +1466,7 @@ void aciSwapMatrices(void)
 	}
 
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
-	aScrDisp -> curMatrix -> redraw();
+	aScrDisp -> curMatrix -> redraw(InterfaceRenderer());
 
 	iScrDisp -> curScr -> show_avi();
 
@@ -1578,7 +1578,7 @@ void aciCancelMatrix(void)
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
 
 	if(aScrDisp -> curMatrix)
-		aScrDisp -> curMatrix -> redraw();
+		aScrDisp -> curMatrix -> redraw(InterfaceRenderer());
 
 	iScrDisp -> curScr -> show_avi();
 
@@ -1670,9 +1670,9 @@ void aciShowScMatrix(void)
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
 
 	if(aScrDisp -> curMatrix)
-		aScrDisp -> curMatrix -> redraw();
+		aScrDisp -> curMatrix -> redraw(InterfaceRenderer());
 
-	aScrDisp -> secondMatrix -> redraw();
+	aScrDisp -> secondMatrix -> redraw(InterfaceRenderer());
 
 	iScrDisp -> curScr -> show_avi();
 
