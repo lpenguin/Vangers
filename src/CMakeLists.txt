@@ -83,10 +83,6 @@ SET(vangers_SRCS
 	${WINDOWS_RES}
 )
 
-SET(VANGERS_ICON vangers.icns)
-SET(VANGERS_ICON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../osx/Resource/${VANGERS_ICON})
-
-#ADD_EXECUTABLE(vangers MACOSX_BUNDLE ${vangers_SRCS} ${VANGERS_ICON_PATH})
 ADD_EXECUTABLE(vangers ${vangers_SRCS} ${VANGERS_ICON_PATH})
 TARGET_INCLUDE_DIRECTORIES(vangers PUBLIC ${PROJECT_SOURCE_DIR}/lib/)
 IF(WIN32)
@@ -98,13 +94,15 @@ IF(WIN32)
 ENDIF(WIN32)
 
 #IF(APPLE)
+#   SET(VANGERS_ICON vangers.icns)
+#   SET(VANGERS_ICON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build_scripts/osx/Resource/${VANGERS_ICON})
+#   ADD_EXECUTABLE(vangers MACOSX_BUNDLE ${vangers_SRCS} ${VANGERS_ICON_PATH})
 #	SET(MACOSX_BUNDLE_ICON_FILE ${VANGERS_ICON})
 #	SET_SOURCE_FILES_PROPERTIES(${VANGERS_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 #	ADD_CUSTOM_COMMAND(TARGET vangers POST_BUILD
-#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../osx/third_party_libs_tool/third_party_libs_tool "$<TARGET_FILE_DIR:vangers>/../..")
+#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../build_scripts/osx/third_party_libs_tool/third_party_libs_tool "$<TARGET_FILE_DIR:vangers>/../..")
 #	ADD_CUSTOM_COMMAND(TARGET vangers POST_BUILD
-#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../osx/wrap_with_shell.sh "$<TARGET_FILE_DIR:vangers>/vangers" "${CMAKE_CURRENT_SOURCE_DIR}/../osx/MacOS/vangers")
-#
+#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../build_scripts/osx/wrap_with_shell.sh "$<TARGET_FILE_DIR:vangers>/vangers" "${CMAKE_CURRENT_SOURCE_DIR}/../build_scripts/osx/MacOS/vangers")
 #ENDIF(APPLE)
 
 TARGET_LINK_LIBRARIES(vangers
