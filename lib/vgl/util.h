@@ -7,11 +7,7 @@
 
 #include <string>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
-//#include <stdio>
-
-//#define runAndCheck(func, __VA_ARGS__) {printf("%")}
 
 namespace vgl{
 	GLuint loadShaders(const std::string &vertexFilePath, const std::string &fragmentFilePath);
