@@ -3,7 +3,7 @@ artifact_dir=artifact/vangers/
 mkdir -p $artifact_dir
 
 cp build/src/vangers.exe $artifact_dir
-cp -r data $artifact_dir
+cp -r data/* $artifact_dir
 
 cp /mingw64/bin/AVCODEC-57.DLL $artifact_dir
 cp /mingw64/bin/AVFORMAT-57.DLL $artifact_dir
