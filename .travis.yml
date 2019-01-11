@@ -1,4 +1,7 @@
 language: cpp
+os:
+  - linux
+  - osx
 sudo: required
 dist: trusty
 compiler:
@@ -18,9 +21,23 @@ addons:
           - libavutil-dev
           - libglew-dev
           - libglm-dev
+    homebrew:
+      packages:
+        - cmake
+        - sdl2
+        - sdl2_net
+        - sdl2_image
+        - libogg
+        - libvorbis
+        - ffmpeg
+        - glew
+        - glm
 before_install:
   - git clone --depth 1 https://github.com/stalkerg/clunk.git /tmp/clunk
-  - cd /tmp/clunk && cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
+  - cd /tmp/clunk
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -DCMAKE_INSTALL_PREFIX=/usr .; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake .; fi
+  - make && sudo make install
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build && cd build && cmake .. && make
